@@ -38,10 +38,7 @@ namespace UPnP
         /// Gets a collection of local IP addresses
         /// </summary>
         /// <returns>a collection of local IP addresses</returns>
-        protected virtual IEnumerable<TAddress> GetLocalAddresses()
-        {
-            return null;
-        }
+        protected abstract IEnumerable<TAddress> GetLocalAddresses();
 
         private async Task<IEnumerable<string>> SearchDevices(string deviceType)
         {
