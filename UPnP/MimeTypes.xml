@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mimeTypes>
+  
+  <mimeType type="audio/basic">
+    <extensions>
+      <extension>snd</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/mid">
+    <extensions>
+      <extension>mid</extension>
+      <extension>midi</extension>
+      <extension>rmi</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/mpeg">
+    <extensions>
+      <extension>aac</extension>
+      <extension>mp3</extension>
+      <extension>mpa</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-ac3">
+    <extensions>
+      <extension>ac3</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-au">
+    <extensions>
+      <extension>au</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-aiff">
+    <extensions>
+      <extension>aif</extension>
+      <extension>aifc</extension>
+      <extension>aiff</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-dts">
+    <extensions>
+      <extension>adt</extension>
+      <extension>adts</extension>
+      <extension>dts</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-eac3">
+    <extensions>
+      <extension>ac3+</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-flac">
+    <extensions>
+      <extension>flac</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-m4a">
+    <extensions>
+      <extension>m4a</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-matroska">
+    <extensions>
+      <extension>mka</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-ms-wma">
+    <extensions>
+      <extension>wma</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-vorbis">
+    <extensions>
+      <extension>oga</extension>
+      <extension>ogg</extension>
+      <extension>spx</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="audio/x-wav">
+    <extensions>
+      <extension>wav</extension>
+    </extensions>
+  </mimeType>
+
+  <mimeType type="image/bmp">
+    <extensions>
+      <extension>bmp</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="image/gif">
+    <extensions>
+      <extension>gif</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="image/jpeg">
+    <extensions>
+      <extension>jpeg</extension>
+      <extension>jpg</extension>
+      <extension>tbn</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="image/png">
+    <extensions>
+      <extension>png</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="image/tiff">
+    <extensions>
+      <extension>tif</extension>
+      <extension>tiff</extension>
+    </extensions>
+  </mimeType>
+
+  <mimeType type="video/3gpp">
+    <extensions>
+      <extension>3gpp</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/3gpp2">
+    <extensions>
+      <extension>3g2</extension>
+      <extension>3gp2</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/avi">
+    <extensions>
+      <extension>avc</extension>
+      <extension>avi</extension>
+      <extension>divx</extension>
+      <extension>part</extension>
+      <extension>xvid</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/mp2p">
+    <extensions>
+      <extension>mp2p</extension>
+      <extension>vob</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/mp2t">
+    <extensions>
+      <extension>mp2t</extension>
+      <extension>ts</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/mp4">
+    <extensions>
+      <extension>m4v</extension>
+      <extension>mp4</extension>
+      <extension>mp4v</extension>    
+    </extensions>
+  </mimeType>
+  <mimeType type="video/mpeg">
+    <extensions>
+      <extension>m1v</extension>
+      <extension>m2t</extension>
+      <extension>m2ts</extension>
+      <extension>mp2</extension>
+      <extension>mpe</extension>
+      <extension>mpeg</extension>
+      <extension>mts</extension>
+      <extension>mpv</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/mpeg2">
+    <extensions>
+      <extension>bin</extension>
+      <extension>iso</extension>
+      <extension>m2v</extension>
+      <extension>mp2v</extension>
+      <extension>mpeg2</extension>
+      <extension>mpg2</extension>
+      <extension>mpv2</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/ogg">
+    <extensions>
+      <extension>ogv</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/quicktime">
+    <extensions>
+      <extension>hdmov</extension>
+      <extension>mov</extension>
+      <extension>qt</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/x-flv">
+    <extensions>
+      <extension>flv</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/x-matroska">
+    <extensions>
+      <extension>mkv</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/x-ms-asf">
+    <extensions>
+      <extension>asf</extension>
+      <extension>asx</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/x-ms-dvr">
+    <extensions>
+      <extension>dvr-ms</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="video/x-ms-wmv">
+    <extensions>
+      <extension>mms</extension>
+      <extension>wmv</extension>
+    </extensions>
+  </mimeType>
+
+  <mimeType type="application/ogg">
+    <extensions>
+      <extension>ogm</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="application/x-3gp">
+    <extensions>
+      <extension>3gp</extension>
+    </extensions>
+  </mimeType>
+  <mimeType type="application/xml">
+    <extensions>
+      <extension>xml</extension>
+    </extensions>
+  </mimeType>
+  
+</mimeTypes>
