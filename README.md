@@ -1,5 +1,5 @@
 # SSDP.Portable
-.NET implementation of Simple Service Discovery Protocol (with AV transport service control point sample)<br />
+.NET implementation of Simple Service Discovery Protocol (with AV transport service control point sample).<br />
 *Portable Class Library* for Windows Phone and Windows Store Apps (8.1/UWP), Desktop Apps (.Net FX 4.5) and Xamarin Android Apps.
 
 ##Usage
