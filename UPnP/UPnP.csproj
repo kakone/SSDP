@@ -44,11 +44,23 @@
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\key.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Item.cs" />
+    <Compile Include="AVTransport\PlayAction.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="AVTransport\SetAVTransportURIAction.cs" />
+    <Compile Include="DIDL-Lite.cs" />
+    <Compile Include="ControlPoint.cs" />
     <Compile Include="Cryptography\MD5.cs" />
     <Compile Include="IPremiumLinkGenerator.cs" />
     <Compile Include="MediaInfo.cs" />
@@ -65,16 +77,18 @@
     <Compile Include="SocketMessageReceivedEventArgs.cs" />
     <Compile Include="ISyndicationClient.cs" />
     <Compile Include="RealDebrid\Result.cs" />
+    <Compile Include="StringWriterUTF8.cs" />
     <Compile Include="UdpSocketBase.cs" />
     <Compile Include="UriUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SsdpBase.cs" />
     <Compile Include="TaskExtensions.cs" />
-    <Compile Include="AVTransportControlPoint.cs" />
+    <Compile Include="AVTransport\AVTransportControlPoint.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceNotification.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="WebUtility.cs" />
+    <Compile Include="XmlSerializerUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MimeTypes.xml" />

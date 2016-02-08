@@ -11,8 +11,16 @@ namespace UPnP
         /// <summary>
         /// Search UPnP devices
         /// </summary>
-        /// <param name="deviceType">device type (MediaRenderer by default)</param>
+        /// <param name="deviceType">UPnP device type</param>
+        /// <param name="deviceVersion">UPnP device version</param>
         /// <returns>a collection of found devices</returns>
-        Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType = "MediaRenderer");
+        Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1);
+
+        /// <summary>
+        /// Search devices
+        /// </summary>
+        /// <param name="deviceType">device type</param>
+        /// <returns>a collection of notifications</returns>
+        Task<IEnumerable<DeviceNotification>> SearchDevices(string deviceType);
     }
 }

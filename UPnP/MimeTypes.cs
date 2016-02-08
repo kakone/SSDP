@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace UPnP
 {
@@ -13,6 +12,6 @@ namespace UPnP
         /// Gets or sets the list of the mime types
         /// </summary>
         [XmlElement("mimeType")]
-        public List<MimeType> Collection { get; set; }
+        public MimeType[] Collection { get; set; }
     }
 }

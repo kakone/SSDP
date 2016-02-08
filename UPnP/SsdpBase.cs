@@ -40,7 +40,7 @@ namespace UPnP
         /// <returns>a collection of local IP addresses</returns>
         protected abstract IEnumerable<TAddress> GetLocalAddresses();
 
-        private async Task<IEnumerable<string>> SearchDevices(string deviceType)
+        private async Task<IEnumerable<string>> GetDevices(string deviceType)
         {
             var tasks = new List<Task<IEnumerable<string>>>();
             foreach (var localAddress in GetLocalAddresses())
@@ -81,14 +81,11 @@ namespace UPnP
 
                     var multicastAddress = IsIPv4(localAddress) ? IPv4MulticastAddress : IPv6MulticastAddress;
 
-                    var req = String.Format("M-SEARCH * HTTP/1.1\r\n" +
-                        "HOST: {0}:{1}\r\n" +
-                        "ST: urn:schemas-upnp-org:device:{2}:1\r\n" +
+                    var req = "M-SEARCH * HTTP/1.1\r\n" +
+                        $"HOST: {multicastAddress}:{UPnPMulticastPort}\r\n" +
+                        $"ST: {deviceType}\r\n" +
                         "MAN: \"ssdp:discover\"\r\n" +
-                        "MX: 3\r\n\r\n",
-                        multicastAddress,
-                        UPnPMulticastPort,
-                        deviceType);
+                        "MX: 3\r\n\r\n";
                     var data = Encoding.UTF8.GetBytes(req);
                     for (int i = 0; i < 3; i++)
                     {
@@ -118,9 +115,15 @@ namespace UPnP
             return properties;
         }
 
-        private async Task<IEnumerable<DeviceNotification>> SearchDeviceNotifications(string deviceType)
+        /// <summary>
+        /// Search devices
+        /// </summary>
+        /// <param name="deviceType">device type</param>
+        /// <returns>a collection of notifications</returns>
+
+        public async Task<IEnumerable<DeviceNotification>> SearchDevices(string deviceType)
         {
-            var responses = await SearchDevices(deviceType);
+            var responses = await GetDevices(deviceType);
 
             var devices = new List<DeviceNotification>();
             DeviceNotification deviceNotification;
@@ -145,15 +148,16 @@ namespace UPnP
         /// <summary>
         /// Search UPnP devices
         /// </summary>
-        /// <param name="deviceType">device type (MediaRenderer by default)</param>
+        /// <param name="deviceType">device type</param>
+        /// <param name="deviceVersion">device version</param>
         /// <returns>a collection of found devices</returns>
-        public async Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType = "MediaRenderer")
+        public async Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1)
         {
             var devices = new List<Device>();
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.ExpectContinue = false;
             var xmlSerializer = new XmlSerializer(typeof(Device));
-            foreach (var deviceNotification in await SearchDeviceNotifications(deviceType))
+            foreach (var deviceNotification in await SearchDevices($"urn:schemas-upnp-org:device:{deviceType}:{deviceVersion}"))
             {
                 try
                 {

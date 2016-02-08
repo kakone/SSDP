@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace UPnP
 {
@@ -9,10 +11,47 @@ namespace UPnP
     public class Service
     {
         /// <summary>
+        /// Gets the service name
+        /// </summary>
+        [XmlIgnore]
+        public string ServiceName { get; private set; }
+
+        /// <summary>
+        /// Gets the service version
+        /// </summary>
+        [XmlIgnore]
+        public int ServiceVersion { get; private set; }
+
+        private string _serviceType;
+        /// <summary>
         /// Gets or sets the service type
         /// </summary>
         [XmlElement("serviceType")]
-        public string ServiceType { get; set; }
+        public string ServiceType
+        {
+            get { return _serviceType; }
+            set
+            {
+                if (_serviceType != value)
+                {
+                    _serviceType = value;
+                    if (value == null)
+                    {
+                        ServiceName = null;
+                        ServiceVersion = 0;
+                    }
+                    else
+                    {
+                        var regex = new Regex(@":service:(?<serviceName>\w+):(?<serviceVersion>\d+)$");
+                        var groups = regex.Match(value).Groups;
+                        ServiceName = groups["serviceName"]?.Value;
+                        var serviceVersion = groups["serviceVersion"]?.Value;
+                        ServiceVersion = (String.IsNullOrWhiteSpace(serviceVersion) ? 0 : Convert.ToInt32(serviceVersion));
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the service identifier

@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace UPnP
+namespace UPnP.AVTransport
 {
     /// <summary>
     /// AVTransport control point
     /// </summary>
-    public class AVTransportControlPoint
+    public class AVTransportControlPoint : ControlPoint
     {
         /// <summary>
         /// Initializes a new instance of AVTransportControlPoint
@@ -43,7 +42,7 @@ namespace UPnP
         /// <returns>the new collection of media renderers</returns>
         public async Task<IEnumerable<Device>> GetMediaRenderers()
         {
-            return (await Ssdp.SearchUPnPDevices()).Where(r => r.Services.Any(service => service.ServiceType == "urn:schemas-upnp-org:service:AVTransport:1")).OrderBy(r => r.FriendlyName);
+            return (await Ssdp.SearchUPnPDevices("MediaRenderer")).Where(r => r.Services.Any(service => service.ServiceName == "AVTransport")).OrderBy(r => r.FriendlyName);
         }
 
         private async Task SetMimeType(HttpClient httpClient, MediaInfo mediaInfo)
@@ -110,13 +109,6 @@ namespace UPnP
             return "audioItem.musicTrack";
         }
 
-        private StringContent CreateContent(string action, string xml)
-        {
-            var content = new StringContent(xml, Encoding.UTF8, "text/xml");
-            content.Headers.Add("SOAPAction", String.Format("\"urn:schemas-upnp-org:service:AVTransport:1#{0}\"", action));
-            return content;
-        }
-
         private async Task<MediaInfo> CheckUri(HttpClient httpClient, MediaInfo mediaInfo)
         {
             var premiumLinkGenerators = PremiumLinkGenerators;
@@ -164,7 +156,6 @@ namespace UPnP
                 }
             }
 
-            mediaInfo.XmlEscape();
             return mediaInfo;
         }
 
@@ -176,54 +167,28 @@ namespace UPnP
         /// <returns>Task</returns>
         public async Task Play(Device mediaRenderer, MediaInfo mediaInfo)
         {
-            using (var httpClient = new HttpClient())
+            using (var httpClient = CreateHttpClient())
             {
-                httpClient.DefaultRequestHeaders.ExpectContinue = false;
-
                 mediaInfo = await CheckUri(httpClient, mediaInfo);
 
-                var requestUri = new Uri(mediaRenderer.Services.First(service => service.ServiceType == "urn:schemas-upnp-org:service:AVTransport:1").ControlURL, UriKind.RelativeOrAbsolute);
-                if (!requestUri.IsAbsoluteUri || requestUri.IsFile) // In Mono.Android, requestUri will not a relative uri but a file
+                var avTransportService = mediaRenderer.Services.First(service => service.ServiceName == "AVTransport");
+                var requestUri = GetControlUri(mediaRenderer, avTransportService);
+
+                var setAVTransportURIAction = new SetAVTransportURIAction();
+                setAVTransportURIAction.CurrentUri = mediaInfo.Uri;
+                setAVTransportURIAction.UriMetadata.Item = new Item()
                 {
-                    requestUri = new Uri(new Uri(mediaRenderer.URLBase), requestUri);
-                }
+                    Title = mediaInfo.Title,
+                    Creator = mediaInfo.Author,
+                    Class = $"object.item.{GetMimeTypeUPnPClass(mediaInfo.Type)}",
+                    Res = new Resource() { ProtocolInfo = $"http-get:*:{mediaInfo.Type}:*", Uri = mediaInfo.Uri }
+                };
 
-                var xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-                    "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
-                        "<s:Body>" +
-                            "{0}" +
-                        "</s:Body>" +
-                    "</s:Envelope>";
-
-                var xmlContent = String.Format(xml, String.Format(
-                    "<u:SetAVTransportURI xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\">" +
-                        "<InstanceID>0</InstanceID>" +
-                        "<CurrentURI>{0}</CurrentURI>" +
-                        "<CurrentURIMetaData>{1}</CurrentURIMetaData>" +
-                    "</u:SetAVTransportURI>", mediaInfo.Uri,
-                    String.Format(WebUtility.HtmlEncode(
-                    "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sec=\"http://www.sec.co.kr/\">" +
-                        "<item id=\"f-0\" parentID=\"0\" restricted=\"1\">" +
-                        (mediaInfo.Title == null ? String.Empty : "<dc:title>{3}</dc:title>") +
-                        (mediaInfo.Author == null ? String.Empty : "<dc:creator>{4}</dc:creator>") +
-                        "<upnp:class>object.item.{2}</upnp:class>" +
-                        "<res protocolInfo=\"http-get:*:{1}:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000\">{0}</res>" +
-                        "</item>" +
-                        "</DIDL-Lite>"), mediaInfo.Uri, mediaInfo.Type, GetMimeTypeUPnPClass(mediaInfo.Type), mediaInfo.Title, mediaInfo.Author)));
-
-                var request = CreateContent("SetAVTransportURI", xmlContent);
-                request.Headers.Add("transferMode.dlna.org", "Streaming");
-                request.Headers.Add("contentFeatures.dlna.org", "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000");
-                var response = await httpClient.PostAsync(requestUri, request);
+                var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction,
+                    Tuple.Create("transferMode.dlna.org", "Streaming"));
                 if (response.IsSuccessStatusCode)
                 {
-                    xmlContent = String.Format(xml,
-                        "<u:Play xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\">" +
-                            "<InstanceID>0</InstanceID>" +
-                            "<Speed>1</Speed>" +
-                        "</u:Play>");
-
-                    response = await httpClient.PostAsync(requestUri, CreateContent("Play", xmlContent));
+                    await PostActionAsync(httpClient, avTransportService, requestUri, new PlayAction());
                 }
                 else
                 {

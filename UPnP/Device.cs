@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace UPnP
 {
@@ -83,14 +82,14 @@ namespace UPnP
         /// </summary>
         [XmlArray("iconList")]
         [XmlArrayItem("icon")]
-        public List<Icon> Icons { get; set; }
+        public Icon[] Icons { get; set; }
 
         /// <summary>
-        /// Gets the collection
+        /// Gets the collection of services
         /// </summary>
         [XmlArray("serviceList")]
         [XmlArrayItem("service")]
-        public List<Service> Services { get; set; }
+        public Service[] Services { get; set; }
 
         /// <summary>
         /// Returns a string that represents the current object
