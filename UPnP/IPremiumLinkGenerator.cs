@@ -8,9 +8,9 @@ namespace UPnP
     public interface IPremiumLinkGenerator
     {
         /// <summary>
-        /// Gets a value indicating whether the generator is enabled or not
+        /// Gets or sets a value indicating whether the generator is enabled or not
         /// </summary>
-        bool Enabled { get; }
+        bool Enabled { get; set; }
 
         /// <summary>
         /// Unrestrict a link
