@@ -70,13 +70,10 @@
     <Compile Include="MimeTypes.cs" />
     <Compile Include="IPremiumLink.cs" />
     <Compile Include="PremiumLinkGenerator.cs" />
-    <Compile Include="RealDebrid\RealDebridClient.cs" />
-    <Compile Include="RealDebrid\RealDebridLink.cs" />
     <Compile Include="IUdpSocket.cs" />
     <Compile Include="SocketMessageReceivedEventHandler.cs" />
     <Compile Include="SocketMessageReceivedEventArgs.cs" />
     <Compile Include="ISyndicationClient.cs" />
-    <Compile Include="RealDebrid\Result.cs" />
     <Compile Include="StringWriterUTF8.cs" />
     <Compile Include="UdpSocketBase.cs" />
     <Compile Include="UriUtility.cs" />

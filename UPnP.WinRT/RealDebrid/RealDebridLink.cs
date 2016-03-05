@@ -11,13 +11,13 @@ namespace UPnP.RealDebrid
         /// <summary>
         /// Gets or sets the title of the media
         /// </summary>
-        [DataMember(Name = "file_name")]
+        [DataMember(Name = "filename")]
         public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets the main link
         /// </summary>
-        [DataMember(Name = "main_link")]
+        [DataMember(Name = "download")]
         public virtual string MainLink { get; set; }
     }
 }

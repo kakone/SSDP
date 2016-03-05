@@ -10,7 +10,7 @@ namespace UPnP
         /// <summary>
         /// Gets or sets a value indicating whether the generator is enabled or not
         /// </summary>
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
         /// <summary>
         /// Unrestrict a link
