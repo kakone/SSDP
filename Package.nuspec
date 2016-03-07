@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SSDP.Portable</id>
-    <version>1.0.7</version>
+    <version>1.0.10</version>
     <authors>Stéphane Mitermite</authors>
     <owners>Stéphane Mitermite</owners>
     <licenseUrl>https://github.com/kakone/SSDP.Portable/blob/master/LICENSE</licenseUrl>

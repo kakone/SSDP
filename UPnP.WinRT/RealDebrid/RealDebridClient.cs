@@ -20,6 +20,11 @@ namespace UPnP.RealDebrid
     public class RealDebridClient : PremiumLinkGenerator
     {
         /// <summary>
+        /// Raised when WebAuthenticationBroker AuthenticateAsync method is not implemented
+        /// </summary>
+        public event EventHandler<AuthenticateEventArgs> AuthenticateNotImplemented;
+
+        /// <summary>
         /// Gets or sets the client identifier
         /// </summary>
         public string ClientId { get; set; }
@@ -70,32 +75,68 @@ namespace UPnP.RealDebrid
             return token.Password;
         }
 
+        private string GetCallbackUrl()
+        {
+            return WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri.Replace("ms-app", "http");
+        }
+
         private async Task CheckAccessToken()
         {
             if (String.IsNullOrWhiteSpace(AccessToken))
             {
-                var callBackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri.Replace("ms-app", "http");
-                var webAuthenticationResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None,
-                    new Uri($"https://api.real-debrid.com/oauth/v2/auth?client_id={ClientId}&redirect_uri={callBackUri}&response_type=code&state=iloverd"),
-                    new Uri(callBackUri));
-                if (webAuthenticationResult.ResponseStatus != WebAuthenticationStatus.Success)
+                var callbackUrl = GetCallbackUrl();
+                var callbackUri = new Uri(callbackUrl);
+                var requestUri = new Uri($"https://api.real-debrid.com/oauth/v2/auth?client_id={ClientId}&redirect_uri={callbackUrl}&response_type=code&state=iloverd");
+                try
                 {
-                    throw new UnauthorizedAccessException();
+                    var webAuthenticationResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None,
+                        requestUri, callbackUri);
+                    await ManageAuthenticateResult(webAuthenticationResult);
                 }
-                var responseData = webAuthenticationResult.ResponseData.Substring(callBackUri.Length + 1).Split('&');
-                var keyValuePairs = new Dictionary<string, string>();
-                foreach (var str in responseData)
+                catch (NotImplementedException ex)
                 {
-                    var keyValue = str.Split('=');
-                    keyValuePairs.Add(keyValue[0], keyValue[1]);
+                    OnAuthenticateNotImplemented(requestUri, callbackUri);
+                    throw new OperationCanceledException("AuthenticateAsync method not implemented", ex);
                 }
-                if (keyValuePairs["action"] != "allow" || keyValuePairs["state"] != "iloverd")
-                {
-                    throw new UnauthorizedAccessException();
-                }
-
-                await UpdateTokens(keyValuePairs["code"], "authorization_code");
             }
+        }
+
+        /// <summary>
+        /// Raises the AuthenticateNotImplemented event
+        /// </summary>
+        /// <param name="requestUri">request uri</param>
+        /// <param name="callBackUri">callback uri</param>
+        protected virtual void OnAuthenticateNotImplemented(Uri requestUri, Uri callBackUri)
+        {
+            if (AuthenticateNotImplemented != null)
+            {
+                AuthenticateNotImplemented(this, new AuthenticateEventArgs(requestUri, callBackUri));
+            }
+        }
+
+        /// <summary>
+        /// Manages the result of the authentication operation
+        /// </summary>
+        /// <param name="webAuthenticationResult">result of the authentication operation</param>
+        public async Task ManageAuthenticateResult(WebAuthenticationResult webAuthenticationResult)
+        {
+            if (webAuthenticationResult.ResponseStatus != WebAuthenticationStatus.Success)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            var responseData = webAuthenticationResult.ResponseData.Substring(GetCallbackUrl().Length + 1).Split('&');
+            var keyValuePairs = new Dictionary<string, string>();
+            foreach (var str in responseData)
+            {
+                var keyValue = str.Split('=');
+                keyValuePairs.Add(keyValue[0], keyValue[1]);
+            }
+            if (keyValuePairs["action"] != "allow" || keyValuePairs["state"] != "iloverd")
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            await UpdateTokens(keyValuePairs["code"], "authorization_code");
         }
 
         private async Task UpdateTokens(string code, string grantType)

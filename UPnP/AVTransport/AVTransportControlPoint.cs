@@ -132,6 +132,7 @@ namespace UPnP.AVTransport
                                 break;
                             }
                         }
+                        catch (OperationCanceledException) { return null; }
                         catch (NotSupportedException) { }
                     }
                 }
@@ -170,6 +171,10 @@ namespace UPnP.AVTransport
             using (var httpClient = CreateHttpClient())
             {
                 mediaInfo = await CheckUri(httpClient, mediaInfo);
+                if (mediaInfo == null)
+                {
+                    return;
+                }
 
                 var avTransportService = mediaRenderer.Services.First(service => service.ServiceName == "AVTransport");
                 var requestUri = GetControlUri(mediaRenderer, avTransportService);
