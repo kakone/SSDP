@@ -181,12 +181,15 @@ namespace UPnP.AVTransport
 
                 var setAVTransportURIAction = new SetAVTransportURIAction();
                 setAVTransportURIAction.CurrentUri = mediaInfo.Uri;
-                setAVTransportURIAction.UriMetadata.Item = new Item()
+                setAVTransportURIAction.UriMetadata = new DIDL_Lite()
                 {
-                    Title = mediaInfo.Title,
-                    Creator = mediaInfo.Author,
-                    Class = $"object.item.{GetMimeTypeUPnPClass(mediaInfo.Type)}",
-                    Res = new Resource() { ProtocolInfo = $"http-get:*:{mediaInfo.Type}:*", Uri = mediaInfo.Uri }
+                    Item = new Item()
+                    {
+                        Title = mediaInfo.Title,
+                        Creator = mediaInfo.Author,
+                        Class = $"object.item.{GetMimeTypeUPnPClass(mediaInfo.Type)}",
+                        Res = new Resource() { ProtocolInfo = $"http-get:*:{mediaInfo.Type}:*", Uri = mediaInfo.Uri }
+                    }
                 };
 
                 var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction,

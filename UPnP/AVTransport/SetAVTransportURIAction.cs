@@ -19,7 +19,7 @@ namespace UPnP.AVTransport
         /// <summary>
         /// Gets or sets the URI of the resource to be controlled
         /// </summary>
-        [XmlElement(Namespace = "")]
+        [XmlElement("CurrentURI", Namespace = "")]
         public string CurrentUri { get; set; }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace UPnP.AVTransport
         /// <summary>
         /// Gets the meta data (DIDL-Lite XML fragment)
         /// </summary>
-        [XmlElement(Namespace = "")]
+        [XmlElement("CurrentURIMetaData", Namespace = "")]
         public string CurrentUriMetadata
         {
             get

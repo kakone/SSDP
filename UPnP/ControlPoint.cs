@@ -16,12 +16,12 @@ namespace UPnP
         /// <summary>
         /// XML SOAP envelope
         /// </summary>
-        private const string SOAP_ENVELOPE = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<s:Envelope encodingStyle=""http://schemas.xmlsoap.org/soap/encoding/"" xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">
-    <s:Body>
-        {0}
-    </s:Body>
-</s:Envelope>";
+        private const string SOAP_ENVELOPE = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+            + "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                + "<s:Body>"
+                    + "{0}"
+                + "</s:Body>"
+            + "</s:Envelope>";
 
         /// <summary>
         /// Create a new HttpClient (disabling Expect:100-Continue header)
@@ -65,7 +65,7 @@ namespace UPnP
             var xmlRootAttribute = action.GetType().GetTypeInfo().GetCustomAttribute<XmlRootAttribute>();
             xmlRootAttribute.Namespace = service.ServiceType;
             var request = new StringContent(String.Format(SOAP_ENVELOPE, XmlSerializerUtility.Serialize(action, xmlRootAttribute,
-                  new XmlQualifiedName("u", service.ServiceType))), Encoding.UTF8, "text/xml");
+                new XmlQualifiedName("u", service.ServiceType))), Encoding.UTF8, "text/xml");
             request.Headers.Add("SOAPAction", $"\"{service.ServiceType}#{xmlRootAttribute.ElementName}\"");
             if (headers != null)
             {
