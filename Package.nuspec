@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SSDP.Portable</id>
-    <version>1.0.11</version>
+    <version>1.0.12</version>
     <authors>Stéphane Mitermite</authors>
     <owners>Stéphane Mitermite</owners>
     <licenseUrl>https://github.com/kakone/SSDP.Portable/blob/master/LICENSE</licenseUrl>
@@ -14,9 +14,9 @@
     <tags>ssdp upnp simple service discovery protocol device controlpoint portable</tags>
   </metadata>
   <files>
-    <file src="bin\Release\UPnP.dll*" target="lib/portable-net45+netcore45+wpa81" />
-    <file src="bin\Release\UPnP.pdb" target="lib/portable-net45+netcore45+wpa81" />
-
+    <file src="bin\Release\UPnP.dll*" target="lib/portable-net45+netcore451+wpa81+uap10.0" />
+    <file src="bin\Release\UPnP.pdb" target="lib/portable-net45+netcore451+wpa81+uap10.0" />
+    
     <file src="bin\Release\UPnP.dll*" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.pdb" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.Android.*" target="lib/MonoAndroid" />
@@ -25,8 +25,8 @@
     <file src="bin\Release\UPnP.pdb" target="lib/net45" />
     <file src="bin\Release\UPnP.NetFx45.*" target="lib/net45" />
 
-    <file src="bin\Release\UPnP.dll*" target="lib/portable-netcore451+wpa81" />
-    <file src="bin\Release\UPnP.pdb" target="lib/portable-netcore451+wpa81" />
-    <file src="bin\Release\UPnP.WinRT.*" target="lib/portable-netcore451+wpa81" />
+    <file src="bin\Release\UPnP.dll*" target="lib/portable-netcore451+wpa81+uap10.0" />
+    <file src="bin\Release\UPnP.pdb" target="lib/portable-netcore451+wpa81+uap10.0" />
+    <file src="bin\Release\UPnP.WinRT.*" target="lib/portable-netcore451+wpa81+uap10.0" />
   </files>
 </package>

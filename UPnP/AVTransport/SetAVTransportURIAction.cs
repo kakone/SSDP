@@ -26,7 +26,7 @@ namespace UPnP.AVTransport
         /// Gets or sets the meta data associated with the specified resource
         /// </summary>
         [XmlIgnore]
-        public DIDL_Lite UriMetadata { get; set; } = new DIDL_Lite();
+        public DIDL_Lite UriMetadata { get; set; }
 
         /// <summary>
         /// Gets the meta data (DIDL-Lite XML fragment)
