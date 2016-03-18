@@ -20,4 +20,3 @@ await controlPoint.Play(mediaRenderers.First(), "http://download.blender.org/pea
 
 ##Download
 [![NuGet Status](http://img.shields.io/nuget/v/SSDP.Portable.svg?style=flat)](https://www.nuget.org/packages/SSDP.Portable)
-[![Nuget](https://img.shields.io/nuget/dt/SSDP.Portable.svg)](https://www.nuget.org/packages/SSDP.Portable)
