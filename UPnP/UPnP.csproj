@@ -55,6 +55,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddressType.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="AVTransport\PlayAction.cs" />
     <Compile Include="Resource.cs" />

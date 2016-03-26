@@ -19,20 +19,27 @@ namespace UPnP
     public abstract class SsdpBase<TUdpSocket, TAddress> : ISsdp
         where TUdpSocket : IDisposable, IUdpSocket<TAddress>, new()
     {
-        private readonly string IPv4MulticastAddress = "239.255.255.250";
-        private readonly string IPv6MulticastAddress = "FF02::C";
         private readonly int UPnPMulticastPort = 1900;
+
         /// <summary>
         /// Reception timeout
         /// </summary>
         protected readonly int ReceptionTimeout = 3000;
 
+        private IDictionary<AddressType, string> MulticastAddresses { get; } =
+            new Dictionary<AddressType, string>
+            {
+                [AddressType.IPv4] = "239.255.255.250",
+                [AddressType.IPv6LinkLocal] = "FF02::C",
+                [AddressType.IPv6SiteLocal] = "FF05::C",
+            };
+
         /// <summary>
-        /// Gets a value indicating whether the IP address is an IPv4 ou IPv6 address
+        /// Gets the type of the IP address
         /// </summary>
         /// <param name="address">IP address</param>
-        /// <returns>true if the IP address is an IPv4, false otherwise</returns>
-        protected abstract bool IsIPv4(TAddress address);
+        /// <returns>IP adress type</returns>
+        protected abstract AddressType GetAddressType(TAddress address);
 
         /// <summary>
         /// Gets a collection of local IP addresses
@@ -47,7 +54,7 @@ namespace UPnP
             {
                 tasks.Add(SearchDevices(localAddress, deviceType));
             }
-            var results = await Task.WhenAll<IEnumerable<string>>(tasks);
+            var results = await Task.WhenAll(tasks);
             return results.SelectMany(result => result);
         }
 
@@ -69,34 +76,37 @@ namespace UPnP
         {
             var responses = new List<string>();
 
-            try
+            var addressType = GetAddressType(localAddress);
+            if (addressType != AddressType.Unknown)
             {
-                using (var udpSocket = new TUdpSocket())
+                try
                 {
-                    udpSocket.MessageReceived += (sender, e) =>
-                        {
-                            AddResponse(responses, e.Message, e.Length);
-                        };
-                    await udpSocket.BindAsync(localAddress);
-
-                    var multicastAddress = IsIPv4(localAddress) ? IPv4MulticastAddress : IPv6MulticastAddress;
-
-                    var req = "M-SEARCH * HTTP/1.1\r\n" +
-                        $"HOST: {multicastAddress}:{UPnPMulticastPort}\r\n" +
-                        $"ST: {deviceType}\r\n" +
-                        "MAN: \"ssdp:discover\"\r\n" +
-                        "MX: 3\r\n\r\n";
-                    var data = Encoding.UTF8.GetBytes(req);
-                    for (int i = 0; i < 3; i++)
+                    using (var udpSocket = new TUdpSocket())
                     {
-                        await udpSocket.SendToAsync(multicastAddress, UPnPMulticastPort, data);
-                    }
+                        udpSocket.MessageReceived += (sender, e) =>
+                            {
+                                AddResponse(responses, e.Message, e.Length);
+                            };
+                        await udpSocket.BindAsync(localAddress);
 
-                    await Task.Delay(ReceptionTimeout);
+                        var multicastAddress = MulticastAddresses[addressType];
+                        var req = "M-SEARCH * HTTP/1.1\r\n" +
+                            $"HOST: {multicastAddress}:{UPnPMulticastPort}\r\n" +
+                            $"ST: {deviceType}\r\n" +
+                            "MAN: \"ssdp:discover\"\r\n" +
+                            "MX: 3\r\n\r\n";
+                        var data = Encoding.UTF8.GetBytes(req);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            await udpSocket.SendToAsync(multicastAddress, UPnPMulticastPort, data);
+                        }
+
+                        await Task.Delay(ReceptionTimeout);
+                    }
                 }
+                catch (TimeoutException) { }
+                catch (ObjectDisposedException) { }
             }
-            catch (TimeoutException) { }
-            catch (ObjectDisposedException) { }
 
             return responses;
         }

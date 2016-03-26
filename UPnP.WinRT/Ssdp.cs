@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Networking;
@@ -10,14 +11,37 @@ namespace UPnP
     /// </summary>
     public class Ssdp : SsdpBase<UdpSocket, HostName>
     {
+        private bool CheckIPv6Address(HostName address, Func<ushort, bool> check)
+        {
+            if (address.Type != HostNameType.Ipv6)
+            {
+                return false;
+            }
+
+            var canonicalName = address.CanonicalName;
+            return check((ushort)(canonicalName[0] * 256 + canonicalName[1]));
+        }
+
+        private bool IsIPv6LinkLocal(HostName address)
+        {
+            return CheckIPv6Address(address, n => (n & 0xFFC0) == 0xFE80);
+        }
+
+        private bool IsIPv6SiteLocal(HostName address)
+        {
+            return CheckIPv6Address(address, n => (n & 0xFFC0) == 0xFEC0);
+        }
+
         /// <summary>
-        /// Gets a value indicating whether the IP address is an IPv4 ou IPv6 address
+        /// Gets the type of the IP address
         /// </summary>
         /// <param name="address">IP address</param>
-        /// <returns>true if the IP address is an IPv4, false otherwise</returns>       
-        protected override bool IsIPv4(HostName address)
+        /// <returns>IP adress type</returns>       
+        protected override AddressType GetAddressType(HostName address)
         {
-            return address.Type == HostNameType.Ipv4;
+            return address.Type == HostNameType.Ipv4 ? AddressType.IPv4 :
+                IsIPv6LinkLocal(address) ? AddressType.IPv6LinkLocal :
+                IsIPv6SiteLocal(address) ? AddressType.IPv6SiteLocal : AddressType.Unknown;
         }
 
         /// <summary>

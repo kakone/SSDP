@@ -12,13 +12,15 @@ namespace UPnP
     public class Ssdp : SsdpBase<UdpSocket, IPAddress>
     {
         /// <summary>
-        /// Gets a value indicating whether the IP address is an IPv4 ou IPv6 address
+        /// Gets the type of the IP address
         /// </summary>
         /// <param name="address">IP address</param>
-        /// <returns>true if the IP address is an IPv4, false otherwise</returns>
-        protected override bool IsIPv4(IPAddress address)
+        /// <returns>IP adress type</returns>       
+        protected override AddressType GetAddressType(IPAddress address)
         {
-            return address.AddressFamily == AddressFamily.InterNetwork;
+            return address.AddressFamily == AddressFamily.InterNetwork ? AddressType.IPv4 :
+                address.IsIPv6LinkLocal ? AddressType.IPv6LinkLocal :
+                address.IsIPv6SiteLocal ? AddressType.IPv6SiteLocal : AddressType.Unknown;
         }
 
         /// <summary>
