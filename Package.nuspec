@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SSDP.Portable</id>
-    <version>1.0.14</version>
+    <version>1.0.15</version>
     <authors>Stéphane Mitermite</authors>
     <owners>Stéphane Mitermite</owners>
     <licenseUrl>https://github.com/kakone/SSDP.Portable/blob/master/LICENSE</licenseUrl>
@@ -20,6 +20,10 @@
     <file src="bin\Release\UPnP.dll*" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.pdb" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.Android.*" target="lib/MonoAndroid" />
+
+    <file src="bin\Release\UPnP.dll*" target="lib/Xamarin.iOS" />
+    <file src="bin\Release\UPnP.pdb" target="lib/Xamarin.iOS" />
+    <file src="bin\Release\UPnP.iOS.*" target="lib/Xamarin.iOS" />
 
     <file src="bin\Release\UPnP.dll*" target="lib/net45" />
     <file src="bin\Release\UPnP.pdb" target="lib/net45" />

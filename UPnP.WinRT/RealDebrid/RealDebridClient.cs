@@ -77,7 +77,7 @@ namespace UPnP.RealDebrid
 
         private string GetCallbackUrl()
         {
-            return WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri.Replace("ms-app", "http");
+            return WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri;
         }
 
         private async Task CheckAccessToken()
