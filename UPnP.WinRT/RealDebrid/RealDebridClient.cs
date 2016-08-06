@@ -86,7 +86,7 @@ namespace UPnP.RealDebrid
             {
                 var callbackUrl = GetCallbackUrl();
                 var callbackUri = new Uri(callbackUrl);
-                var requestUri = new Uri($"https://api.real-debrid.com/oauth/v2/auth?client_id={ClientId}&redirect_uri={callbackUrl}&response_type=code&state=iloverd");
+                var requestUri = new Uri($"https://api.real-debrid.com/oauth/v2/auth?client_id={ClientId}&redirect_uri={System.Net.WebUtility.UrlEncode(callbackUrl)}&response_type=code&state=iloverd");
                 try
                 {
                     var webAuthenticationResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None,

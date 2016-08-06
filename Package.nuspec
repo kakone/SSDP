@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>SSDP.Portable</id>
-    <version>1.0.16</version>
+    <version>1.0.17</version>
     <authors>Stéphane Mitermite</authors>
     <owners>Stéphane Mitermite</owners>
     <licenseUrl>https://github.com/kakone/SSDP.Portable/blob/master/LICENSE</licenseUrl>
@@ -16,7 +16,7 @@
   <files>
     <file src="bin\Release\UPnP.dll*" target="lib/portable-net45+netcore45+wpa81" />
     <file src="bin\Release\UPnP.pdb" target="lib/portable-net45+netcore45+wpa81" />
-    
+
     <file src="bin\Release\UPnP.dll*" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.pdb" target="lib/MonoAndroid" />
     <file src="bin\Release\UPnP.Android.*" target="lib/MonoAndroid" />
