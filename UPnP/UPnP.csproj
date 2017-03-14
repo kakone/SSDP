@@ -1,103 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F02DCDDF-B3A8-4DEF-A9B0-48591A80926A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UPnP</RootNamespace>
-    <AssemblyName>UPnP</AssemblyName>
-    <DefaultLanguage>en</DefaultLanguage>
-    <SupportedCultures>fr</SupportedCultures>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <NuGetPackageImportStamp>ea781f6b</NuGetPackageImportStamp>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.pfx</AssemblyOriginatorKeyFile>
+    <PackageId>SSDP.Portable</PackageId>
+    <Version>1.0.18</Version>
+    <Authors>Stéphane Mitermite</Authors>
+    <Company>Stéphane Mitermite</Company>
+    <Product>SSDP.Portable</Product>
+    <Description>.NET implementation of Simple Service Discovery Protocol (with AV transport service control point sample)</Description>
+    <Copyright>Copyright 2017 Stéphane Mitermite</Copyright>
+    <PackageLicenseUrl>https://github.com/kakone/SSDP.Portable/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/kakone/SSDP.Portable</PackageProjectUrl>
+    <PackageTags>ssdp upnp simple service discovery protocol device controlpoint standard</PackageTags>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Debug\UPnP.XML</DocumentationFile>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.4\.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\key.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AddressType.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="AVTransport\PlayAction.cs" />
-    <Compile Include="Resource.cs" />
-    <Compile Include="AVTransport\SetAVTransportURIAction.cs" />
-    <Compile Include="DIDL-Lite.cs" />
-    <Compile Include="ControlPoint.cs" />
-    <Compile Include="Cryptography\MD5.cs" />
-    <Compile Include="IPremiumLinkGenerator.cs" />
-    <Compile Include="MediaInfo.cs" />
-    <Compile Include="Icon.cs" />
-    <Compile Include="ISsdp.cs" />
-    <Compile Include="MimeType.cs" />
-    <Compile Include="MimeTypes.cs" />
-    <Compile Include="IPremiumLink.cs" />
-    <Compile Include="PremiumLinkGenerator.cs" />
-    <Compile Include="IUdpSocket.cs" />
-    <Compile Include="SocketMessageReceivedEventHandler.cs" />
-    <Compile Include="SocketMessageReceivedEventArgs.cs" />
-    <Compile Include="ISyndicationClient.cs" />
-    <Compile Include="StringWriterUTF8.cs" />
-    <Compile Include="UdpSocketBase.cs" />
-    <Compile Include="UriUtility.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SsdpBase.cs" />
-    <Compile Include="TaskExtensions.cs" />
-    <Compile Include="AVTransport\AVTransportControlPoint.cs" />
-    <Compile Include="Device.cs" />
-    <Compile Include="DeviceNotification.cs" />
-    <Compile Include="Service.cs" />
-    <Compile Include="WebUtility.cs" />
-    <Compile Include="XmlSerializerUtility.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="MimeTypes.xml" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XmlSerializer" Version="4.3.0" />
+  </ItemGroup>
+
 </Project>

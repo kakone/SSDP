@@ -39,8 +39,10 @@ namespace UPnP
                 var xmlAttributeOverrides = new XmlAttributeOverrides();
                 if (rootAttribute != null)
                 {
-                    var xmlAttributes = new XmlAttributes();
-                    xmlAttributes.XmlRoot = rootAttribute;
+                    var xmlAttributes = new XmlAttributes()
+                    {
+                        XmlRoot = rootAttribute
+                    };
                     xmlAttributeOverrides.Add(type, xmlAttributes);
                 }
                 using (var xmWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { OmitXmlDeclaration = true }))

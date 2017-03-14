@@ -1,11 +1,7 @@
-﻿#if NETFX_CORE
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
-using System.Linq;
 using System.Threading.Tasks;
 using UPnP.AVTransport;
+using System.Linq;
 
 namespace UPnP.Tests
 {

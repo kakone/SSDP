@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -17,13 +19,11 @@ namespace UPnP.AVTransport
         /// Initializes a new instance of AVTransportControlPoint
         /// </summary>
         /// <param name="ssdp">discovery service</param>
-        /// <param name="syndicationClient">syndication client</param>
-        /// <param name="premiumLinkGenerators">premium link generators</param>
-        public AVTransportControlPoint(ISsdp ssdp, ISyndicationClient syndicationClient = null, params IPremiumLinkGenerator[] premiumLinkGenerators)
+        /// <param name="mediaInfoFetchers">media info fetchers</param>
+        public AVTransportControlPoint(ISsdp ssdp, params IMediaInfoFetcher[] mediaInfoFetchers)
         {
             Ssdp = ssdp;
-            SyndicationClient = syndicationClient;
-            PremiumLinkGenerators = premiumLinkGenerators;
+            MediaInfoFetchers = mediaInfoFetchers;
             var xmlSerializer = new XmlSerializer(typeof(MimeTypes));
             using (var stream = GetType().GetTypeInfo().Assembly.GetManifestResourceStream("UPnP.MimeTypes.xml"))
             {
@@ -32,9 +32,8 @@ namespace UPnP.AVTransport
         }
 
         private ISsdp Ssdp { get; set; }
-        private ISyndicationClient SyndicationClient { get; set; }
+        private IEnumerable<IMediaInfoFetcher> MediaInfoFetchers { get; set; }
         private IEnumerable<MimeType> MimeTypes { get; set; }
-        private IEnumerable<IPremiumLinkGenerator> PremiumLinkGenerators { get; set; }
 
         /// <summary>
         /// Refresh the collection of media renderers
@@ -54,7 +53,7 @@ namespace UPnP.AVTransport
 
             var mediaUri = new Uri(WebUtility.UrlDecode(mediaInfo.Uri).Trim());
             String mediaFilename;
-            try { mediaFilename = UriUtility.GetFileName(mediaUri.AbsolutePath); }
+            try { mediaFilename = Path.GetFileName(mediaUri.AbsolutePath); }
             catch (Exception) { mediaFilename = null; }
             if (String.IsNullOrWhiteSpace(mediaInfo.Title))
             {
@@ -65,7 +64,7 @@ namespace UPnP.AVTransport
             {
                 if (!String.IsNullOrWhiteSpace(mediaFilename))
                 {
-                    var extension = UriUtility.GetExtension(mediaFilename);
+                    var extension = Path.GetExtension(mediaFilename);
                     if (!String.IsNullOrWhiteSpace(extension))
                     {
                         extension = extension.Substring(1).ToLower();
@@ -111,52 +110,19 @@ namespace UPnP.AVTransport
 
         private async Task<MediaInfo> CheckUri(HttpClient httpClient, MediaInfo mediaInfo)
         {
-            var premiumLinkGenerators = PremiumLinkGenerators;
-            if (premiumLinkGenerators != null)
+            var mediaInfoFetchers = MediaInfoFetchers;
+            if (mediaInfoFetchers != null)
             {
-                string url = null;
-                foreach (var premiumLinkGenerator in premiumLinkGenerators)
+                foreach (var mediaInfoFetcher in mediaInfoFetchers)
                 {
-                    if (premiumLinkGenerator.Enabled)
+                    if (await mediaInfoFetcher.RetrieveMediaInfoAsync(mediaInfo))
                     {
-                        try
-                        {
-                            var premiumLink = await premiumLinkGenerator.Unrestrict(url ?? (url = WebUtility.UrlDecode(mediaInfo.Uri).Trim()));
-                            if (premiumLink != null)
-                            {
-                                if (String.IsNullOrWhiteSpace(mediaInfo.Title))
-                                {
-                                    mediaInfo.Title = premiumLink.Title;
-                                }
-                                mediaInfo.Uri = premiumLink.MainLink;
-                                break;
-                            }
-                        }
-                        catch (OperationCanceledException) { return null; }
-                        catch (NotSupportedException) { }
+                        break;
                     }
                 }
             }
 
             await SetMimeType(httpClient, mediaInfo);
-
-            var syndicationClient = SyndicationClient;
-            if (syndicationClient != null)
-            {
-                var mediaType = mediaInfo.Type;
-                if (mediaType == "application/rss+xml" || mediaType == "application/xml" || mediaType == "text/xml" || mediaType == "application/rdf+xml" ||
-                    mediaType == "application/atom+xml" || mediaType == "application/xml")
-                {
-                    // Podcast
-                    var item = await syndicationClient.RetrieveFirstFeedAsync(mediaInfo.Uri);
-                    if (item != null)
-                    {
-                        mediaInfo = item;
-                        await SetMimeType(httpClient, mediaInfo);
-                    }
-                }
-            }
-
             return mediaInfo;
         }
 
@@ -179,16 +145,18 @@ namespace UPnP.AVTransport
                 var avTransportService = mediaRenderer.Services.First(service => service.ServiceName == "AVTransport");
                 var requestUri = GetControlUri(mediaRenderer, avTransportService);
 
-                var setAVTransportURIAction = new SetAVTransportURIAction();
-                setAVTransportURIAction.CurrentUri = mediaInfo.Uri;
-                setAVTransportURIAction.UriMetadata = new DIDL_Lite()
+                var setAVTransportURIAction = new SetAVTransportURIAction()
                 {
-                    Item = new Item()
+                    CurrentUri = mediaInfo.Uri,
+                    UriMetadata = new DIDL_Lite()
                     {
-                        Title = mediaInfo.Title,
-                        Creator = mediaInfo.Author,
-                        Class = $"object.item.{GetMimeTypeUPnPClass(mediaInfo.Type)}",
-                        Res = new Resource() { ProtocolInfo = $"http-get:*:{mediaInfo.Type}:*", Uri = mediaInfo.Uri }
+                        Item = new Item()
+                        {
+                            Title = mediaInfo.Title,
+                            Creator = mediaInfo.Author,
+                            Class = $"object.item.{GetMimeTypeUPnPClass(mediaInfo.Type)}",
+                            Res = new Resource() { ProtocolInfo = $"http-get:*:{mediaInfo.Type}:*", Uri = mediaInfo.Uri }
+                        }
                     }
                 };
 

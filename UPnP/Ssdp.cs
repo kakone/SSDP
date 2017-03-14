@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -14,17 +18,11 @@ namespace UPnP
     /// <summary>
     /// Base class for Simple Service Discovery Protocol implementation
     /// </summary>
-    /// <typeparam name="TUdpSocket">UDP socket type</typeparam>
-    /// <typeparam name="TAddress">IP address type</typeparam>
-    public abstract class SsdpBase<TUdpSocket, TAddress> : ISsdp
-        where TUdpSocket : IDisposable, IUdpSocket<TAddress>, new()
+    public class Ssdp : ISsdp
     {
-        private readonly int UPnPMulticastPort = 1900;
-
-        /// <summary>
-        /// Reception timeout
-        /// </summary>
-        protected readonly int ReceptionTimeout = 3000;
+        private const int SIO_UDP_CONNRESET = -1744830452;
+        private const int UPNP_MULTICAST_PORT = 1900;
+        private const int RECEIVE_TIMEOUT = 3000;
 
         private IDictionary<AddressType, string> MulticastAddresses { get; } =
             new Dictionary<AddressType, string>
@@ -35,17 +33,14 @@ namespace UPnP
             };
 
         /// <summary>
-        /// Gets the type of the IP address
-        /// </summary>
-        /// <param name="address">IP address</param>
-        /// <returns>IP adress type</returns>
-        protected abstract AddressType GetAddressType(TAddress address);
-
-        /// <summary>
         /// Gets a collection of local IP addresses
         /// </summary>
         /// <returns>a collection of local IP addresses</returns>
-        protected abstract IEnumerable<TAddress> GetLocalAddresses();
+        protected IEnumerable<IPAddress> GetLocalAddresses()
+        {
+            return NetworkInterface.GetAllNetworkInterfaces().Select(ni => ni.GetIPProperties()).Where(p => p.GatewayAddresses != null && p.GatewayAddresses.Any()).SelectMany(p => p.UnicastAddresses).Select(
+            aInfo => aInfo.Address).Where(a => a.AddressFamily == AddressFamily.InterNetwork || a.AddressFamily == AddressFamily.InterNetworkV6);
+        }
 
         private async Task<IEnumerable<string>> GetDevices(string deviceType)
         {
@@ -58,50 +53,50 @@ namespace UPnP
             return results.SelectMany(result => result);
         }
 
-        /// <summary>
-        /// Add a response to the collection of response
-        /// </summary>
-        /// <param name="responses">the collection of response</param>
-        /// <param name="buffer">data to add</param>
-        /// <param name="length">length of the data (or null to add the complete data)</param>
-        private void AddResponse(ICollection<string> responses, byte[] buffer, int? length = null)
+        private async Task Receive(Socket socket, ArraySegment<byte> buffer, ICollection<string> responses)
         {
-            if (length > 0 || length == null)
+            while (true)
             {
-                responses.Add(Encoding.UTF8.GetString(buffer, 0, length ?? buffer.Length));
+                var i = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                if (i > 0)
+                {
+                    responses.Add(Encoding.UTF8.GetString(buffer.Take(i).ToArray()));
+                }
             }
         }
 
-        private async Task<IEnumerable<string>> SearchDevices(TAddress localAddress, string deviceType)
+        private async Task<IEnumerable<string>> SearchDevices(IPAddress localAddress, string deviceType)
         {
             var responses = new List<string>();
 
-            var addressType = GetAddressType(localAddress);
+            var addressType = (localAddress.AddressFamily == AddressFamily.InterNetwork ? AddressType.IPv4 :
+                localAddress.IsIPv6LinkLocal ? AddressType.IPv6LinkLocal :
+                localAddress.IsIPv6SiteLocal ? AddressType.IPv6SiteLocal : AddressType.Unknown);
             if (addressType != AddressType.Unknown)
             {
                 try
                 {
-                    using (var udpSocket = new TUdpSocket())
+                    using (var socket = new Socket(localAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp))
                     {
-                        udpSocket.MessageReceived += (sender, e) =>
-                            {
-                                AddResponse(responses, e.Message, e.Length);
-                            };
-                        await udpSocket.BindAsync(localAddress);
+                        socket.ExclusiveAddressUse = true;
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            socket.IOControl(SIO_UDP_CONNRESET, new[] { Convert.ToByte(false) }, null);
+                        }
+                        socket.Bind(new IPEndPoint(localAddress, 0));
 
-                        var multicastAddress = MulticastAddresses[addressType];
+                        var multicastEndPoint = new IPEndPoint(IPAddress.Parse(MulticastAddresses[addressType]), UPNP_MULTICAST_PORT);
                         var req = "M-SEARCH * HTTP/1.1\r\n" +
-                            $"HOST: {multicastAddress}:{UPnPMulticastPort}\r\n" +
+                            $"HOST: {multicastEndPoint}\r\n" +
                             $"ST: {deviceType}\r\n" +
                             "MAN: \"ssdp:discover\"\r\n" +
                             "MX: 3\r\n\r\n";
-                        var data = Encoding.UTF8.GetBytes(req);
+                        var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes(req));
                         for (int i = 0; i < 3; i++)
                         {
-                            await udpSocket.SendToAsync(multicastAddress, UPnPMulticastPort, data);
+                            await socket.SendToAsync(data, SocketFlags.None, multicastEndPoint);
                         }
-
-                        await Task.Delay(ReceptionTimeout);
+                        await Receive(socket, new ArraySegment<byte>(new byte[4096]), responses).TimeoutAfter(RECEIVE_TIMEOUT);
                     }
                 }
                 catch (TimeoutException) { }
