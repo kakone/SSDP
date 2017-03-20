@@ -20,12 +20,12 @@ namespace UPnP.Tests
         public async Task Play()
         {
             var controlPoint = new AVTransportControlPoint(new Ssdp());
-            var mediaRenderers = await controlPoint.GetMediaRenderers();
+            var mediaRenderers = await controlPoint.GetMediaRenderersAsync();
             if (!mediaRenderers.Any())
             {
                 Assert.Inconclusive("No media renderer found");
             }
-            await controlPoint.Play(
+            await controlPoint.PlayAsync(
                 mediaRenderers.FirstOrDefault(render => render.FriendlyName.StartsWith("Kodi")) ?? mediaRenderers.First(),
                 BIG_BUCK_BUNNY_MOVIE);
         }

@@ -39,12 +39,12 @@ namespace UPnP.AVTransport
         /// Refresh the collection of media renderers
         /// </summary>
         /// <returns>the new collection of media renderers</returns>
-        public async Task<IEnumerable<Device>> GetMediaRenderers()
+        public async Task<IEnumerable<Device>> GetMediaRenderersAsync()
         {
             return (await Ssdp.SearchUPnPDevicesAsync("MediaRenderer")).Where(r => r.Services.Any(service => service.ServiceName == "AVTransport")).OrderBy(r => r.FriendlyName);
         }
 
-        private async Task SetMimeType(HttpClient httpClient, MediaInfo mediaInfo)
+        private async Task SetMimeTypeAsync(HttpClient httpClient, MediaInfo mediaInfo)
         {
             if (!String.IsNullOrWhiteSpace(mediaInfo.Title) && !String.IsNullOrWhiteSpace(mediaInfo.Type))
             {
@@ -108,7 +108,7 @@ namespace UPnP.AVTransport
             return "audioItem.musicTrack";
         }
 
-        private async Task<MediaInfo> CheckUri(HttpClient httpClient, MediaInfo mediaInfo)
+        private async Task<MediaInfo> CheckUriAsync(HttpClient httpClient, MediaInfo mediaInfo)
         {
             var mediaInfoFetchers = MediaInfoFetchers;
             if (mediaInfoFetchers != null)
@@ -122,7 +122,7 @@ namespace UPnP.AVTransport
                 }
             }
 
-            await SetMimeType(httpClient, mediaInfo);
+            await SetMimeTypeAsync(httpClient, mediaInfo);
             return mediaInfo;
         }
 
@@ -132,11 +132,11 @@ namespace UPnP.AVTransport
         /// <param name="mediaRenderer">media renderer</param>
         /// <param name="mediaInfo">informations about the media</param>
         /// <returns>Task</returns>
-        public async Task Play(Device mediaRenderer, MediaInfo mediaInfo)
+        public async Task PlayAsync(Device mediaRenderer, MediaInfo mediaInfo)
         {
             using (var httpClient = CreateHttpClient())
             {
-                mediaInfo = await CheckUri(httpClient, mediaInfo);
+                mediaInfo = await CheckUriAsync(httpClient, mediaInfo);
                 if (mediaInfo == null)
                 {
                     return;
@@ -179,9 +179,9 @@ namespace UPnP.AVTransport
         /// <param name="mediaRenderer">media renderer</param>
         /// <param name="uri">uri of the media</param>
         /// <returns>Task</returns>
-        public async Task Play(Device mediaRenderer, string uri)
+        public async Task PlayAsync(Device mediaRenderer, string uri)
         {
-            await Play(mediaRenderer, new MediaInfo() { Uri = uri });
+            await PlayAsync(mediaRenderer, new MediaInfo() { Uri = uri });
         }
     }
 }

@@ -6,7 +6,7 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>key.pfx</AssemblyOriginatorKeyFile>
     <PackageId>SSDP.Portable</PackageId>
-    <Version>1.0.20</Version>
+    <Version>1.0.21</Version>
     <Authors>Stéphane Mitermite</Authors>
     <Company>Stéphane Mitermite</Company>
     <Product>SSDP.Portable</Product>
