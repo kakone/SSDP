@@ -9,18 +9,25 @@ namespace UPnP
     public interface ISsdp
     {
         /// <summary>
-        /// Search UPnP devices
+        /// Search devices
         /// </summary>
-        /// <param name="deviceType">UPnP device type</param>
-        /// <param name="deviceVersion">UPnP device version</param>
-        /// <returns>a collection of found devices</returns>
-        Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1);
+        /// <param name="deviceType">device type</param>
+        /// <returns>a collection of notifications</returns>
+        Task<IEnumerable<DeviceNotification>> Search(string deviceType);
 
         /// <summary>
         /// Search devices
         /// </summary>
         /// <param name="deviceType">device type</param>
-        /// <returns>a collection of notifications</returns>
-        Task<IEnumerable<DeviceNotification>> SearchDevices(string deviceType);
+        /// <returns>a collection of found devices</returns>
+        Task<IEnumerable<Device>> SearchDevices(string deviceType);
+
+        /// <summary>
+        /// Search UPnP devices
+        /// </summary>
+        /// <param name="deviceType">UPnP device type</param>
+        /// <param name="deviceVersion">UPnP device version</param>
+        /// <returns>a collection of found devices</returns>
+        Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1);        
     }
 }

@@ -125,8 +125,7 @@ namespace UPnP
         /// </summary>
         /// <param name="deviceType">device type</param>
         /// <returns>a collection of notifications</returns>
-
-        public async Task<IEnumerable<DeviceNotification>> SearchDevices(string deviceType)
+        public async Task<IEnumerable<DeviceNotification>> Search(string deviceType)
         {
             var responses = await GetDevices(deviceType);
 
@@ -151,18 +150,17 @@ namespace UPnP
         }
 
         /// <summary>
-        /// Search UPnP devices
+        /// Search devices
         /// </summary>
         /// <param name="deviceType">device type</param>
-        /// <param name="deviceVersion">device version</param>
         /// <returns>a collection of found devices</returns>
-        public async Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1)
+        public async Task<IEnumerable<Device>> SearchDevices(string deviceType)
         {
             var devices = new List<Device>();
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.ExpectContinue = false;
             var xmlSerializer = new XmlSerializer(typeof(Device));
-            foreach (var deviceNotification in await SearchDevices($"urn:schemas-upnp-org:device:{deviceType}:{deviceVersion}"))
+            foreach (var deviceNotification in await Search(deviceType))
             {
                 try
                 {
@@ -191,6 +189,17 @@ namespace UPnP
                 catch (Exception) { }
             }
             return devices;
+        }
+
+        /// <summary>
+        /// Search UPnP devices
+        /// </summary>
+        /// <param name="deviceType">device type</param>
+        /// <param name="deviceVersion">device version</param>
+        /// <returns>a collection of found devices</returns>
+        public async Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1)
+        {
+            return await SearchDevices($"urn:schemas-upnp-org:device:{deviceType}:{deviceVersion}");
         }
     }
 }
