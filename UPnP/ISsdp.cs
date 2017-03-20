@@ -13,14 +13,14 @@ namespace UPnP
         /// </summary>
         /// <param name="deviceType">device type</param>
         /// <returns>a collection of notifications</returns>
-        Task<IEnumerable<DeviceNotification>> Search(string deviceType);
+        Task<IEnumerable<DeviceNotification>> SearchAsync(string deviceType);
 
         /// <summary>
         /// Search devices
         /// </summary>
         /// <param name="deviceType">device type</param>
         /// <returns>a collection of found devices</returns>
-        Task<IEnumerable<Device>> SearchDevices(string deviceType);
+        Task<IEnumerable<Device>> SearchDevicesAsync(string deviceType);
 
         /// <summary>
         /// Search UPnP devices
@@ -28,6 +28,6 @@ namespace UPnP
         /// <param name="deviceType">UPnP device type</param>
         /// <param name="deviceVersion">UPnP device version</param>
         /// <returns>a collection of found devices</returns>
-        Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1);        
+        Task<IEnumerable<Device>> SearchUPnPDevicesAsync(string deviceType, int deviceVersion = 1);        
     }
 }

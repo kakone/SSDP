@@ -41,7 +41,7 @@ namespace UPnP.AVTransport
         /// <returns>the new collection of media renderers</returns>
         public async Task<IEnumerable<Device>> GetMediaRenderers()
         {
-            return (await Ssdp.SearchUPnPDevices("MediaRenderer")).Where(r => r.Services.Any(service => service.ServiceName == "AVTransport")).OrderBy(r => r.FriendlyName);
+            return (await Ssdp.SearchUPnPDevicesAsync("MediaRenderer")).Where(r => r.Services.Any(service => service.ServiceName == "AVTransport")).OrderBy(r => r.FriendlyName);
         }
 
         private async Task SetMimeType(HttpClient httpClient, MediaInfo mediaInfo)

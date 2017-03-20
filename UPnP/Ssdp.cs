@@ -42,18 +42,18 @@ namespace UPnP
             aInfo => aInfo.Address).Where(a => a.AddressFamily == AddressFamily.InterNetwork || a.AddressFamily == AddressFamily.InterNetworkV6);
         }
 
-        private async Task<IEnumerable<string>> GetDevices(string deviceType)
+        private async Task<IEnumerable<string>> GetDevicesAsync(string deviceType)
         {
             var tasks = new List<Task<IEnumerable<string>>>();
             foreach (var localAddress in GetLocalAddresses())
             {
-                tasks.Add(SearchDevices(localAddress, deviceType));
+                tasks.Add(SearchDevicesAsync(localAddress, deviceType));
             }
             var results = await Task.WhenAll(tasks);
             return results.SelectMany(result => result);
         }
 
-        private async Task Receive(Socket socket, ArraySegment<byte> buffer, ICollection<string> responses)
+        private async Task ReceiveAsync(Socket socket, ArraySegment<byte> buffer, ICollection<string> responses)
         {
             while (true)
             {
@@ -65,7 +65,7 @@ namespace UPnP
             }
         }
 
-        private async Task<IEnumerable<string>> SearchDevices(IPAddress localAddress, string deviceType)
+        private async Task<IEnumerable<string>> SearchDevicesAsync(IPAddress localAddress, string deviceType)
         {
             var responses = new List<string>();
 
@@ -96,7 +96,7 @@ namespace UPnP
                         {
                             await socket.SendToAsync(data, SocketFlags.None, multicastEndPoint);
                         }
-                        await Receive(socket, new ArraySegment<byte>(new byte[4096]), responses).TimeoutAfter(RECEIVE_TIMEOUT);
+                        await ReceiveAsync(socket, new ArraySegment<byte>(new byte[4096]), responses).TimeoutAfter(RECEIVE_TIMEOUT);
                     }
                 }
                 catch (TimeoutException) { }
@@ -125,9 +125,9 @@ namespace UPnP
         /// </summary>
         /// <param name="deviceType">device type</param>
         /// <returns>a collection of notifications</returns>
-        public async Task<IEnumerable<DeviceNotification>> Search(string deviceType)
+        public async Task<IEnumerable<DeviceNotification>> SearchAsync(string deviceType)
         {
-            var responses = await GetDevices(deviceType);
+            var responses = await GetDevicesAsync(deviceType);
 
             var devices = new List<DeviceNotification>();
             DeviceNotification deviceNotification;
@@ -154,13 +154,13 @@ namespace UPnP
         /// </summary>
         /// <param name="deviceType">device type</param>
         /// <returns>a collection of found devices</returns>
-        public async Task<IEnumerable<Device>> SearchDevices(string deviceType)
+        public async Task<IEnumerable<Device>> SearchDevicesAsync(string deviceType)
         {
             var devices = new List<Device>();
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.ExpectContinue = false;
             var xmlSerializer = new XmlSerializer(typeof(Device));
-            foreach (var deviceNotification in await Search(deviceType))
+            foreach (var deviceNotification in await SearchAsync(deviceType))
             {
                 try
                 {
@@ -197,9 +197,9 @@ namespace UPnP
         /// <param name="deviceType">device type</param>
         /// <param name="deviceVersion">device version</param>
         /// <returns>a collection of found devices</returns>
-        public async Task<IEnumerable<Device>> SearchUPnPDevices(string deviceType, int deviceVersion = 1)
+        public async Task<IEnumerable<Device>> SearchUPnPDevicesAsync(string deviceType, int deviceVersion = 1)
         {
-            return await SearchDevices($"urn:schemas-upnp-org:device:{deviceType}:{deviceVersion}");
+            return await SearchDevicesAsync($"urn:schemas-upnp-org:device:{deviceType}:{deviceVersion}");
         }
     }
 }
