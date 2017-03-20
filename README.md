@@ -1,8 +1,7 @@
 # SSDP.Portable
-.NET implementation of Simple Service Discovery Protocol (with AV transport service control point sample).<br />
-*Portable Class Library* for Windows Phone and Windows Store Apps (8.1/UWP), Desktop Apps (.Net FX 4.5) and Xamarin Android Apps.
+.NET Standard implementation of Simple Service Discovery Protocol (with AV transport service control point sample).<br />
 
-##Usage
+## Usage
 ### Devices search
 ```C#
 var devices = await new Ssdp().SearchUPnPDevices("MediaRenderer");
@@ -18,5 +17,5 @@ var mediaRenderers = await controlPoint.GetMediaRenderers();
 await controlPoint.Play(mediaRenderers.First(), "http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_surround-fix.avi");
 ```
 
-##Download
+## Download
 [![NuGet Status](http://img.shields.io/nuget/v/SSDP.Portable.svg?style=flat)](https://www.nuget.org/packages/SSDP.Portable)
