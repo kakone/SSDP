@@ -19,11 +19,9 @@ namespace UPnP.AVTransport
         /// Initializes a new instance of AVTransportControlPoint
         /// </summary>
         /// <param name="ssdp">discovery service</param>
-        /// <param name="mediaInfoFetchers">media info fetchers</param>
-        public AVTransportControlPoint(ISsdp ssdp, params IMediaInfoFetcher[] mediaInfoFetchers)
+        public AVTransportControlPoint(ISsdp ssdp)
         {
             Ssdp = ssdp;
-            MediaInfoFetchers = mediaInfoFetchers;
             var xmlSerializer = new XmlSerializer(typeof(MimeTypes));
             using (var stream = GetType().GetTypeInfo().Assembly.GetManifestResourceStream("UPnP.MimeTypes.xml"))
             {
@@ -32,7 +30,6 @@ namespace UPnP.AVTransport
         }
 
         private ISsdp Ssdp { get; set; }
-        private IEnumerable<IMediaInfoFetcher> MediaInfoFetchers { get; set; }
         private IEnumerable<MimeType> MimeTypes { get; set; }
 
         /// <summary>
@@ -108,24 +105,6 @@ namespace UPnP.AVTransport
             return "audioItem.musicTrack";
         }
 
-        private async Task<MediaInfo> CheckUriAsync(HttpClient httpClient, MediaInfo mediaInfo)
-        {
-            var mediaInfoFetchers = MediaInfoFetchers;
-            if (mediaInfoFetchers != null)
-            {
-                foreach (var mediaInfoFetcher in mediaInfoFetchers)
-                {
-                    if (await mediaInfoFetcher.RetrieveMediaInfoAsync(mediaInfo))
-                    {
-                        break;
-                    }
-                }
-            }
-
-            await SetMimeTypeAsync(httpClient, mediaInfo);
-            return mediaInfo;
-        }
-
         /// <summary>
         /// Play a media HTTP link to a media renderer
         /// </summary>
@@ -136,11 +115,7 @@ namespace UPnP.AVTransport
         {
             using (var httpClient = CreateHttpClient())
             {
-                mediaInfo = await CheckUriAsync(httpClient, mediaInfo);
-                if (mediaInfo == null)
-                {
-                    return;
-                }
+                await SetMimeTypeAsync(httpClient, mediaInfo);
 
                 var avTransportService = mediaRenderer.Services.First(service => service.ServiceName == "AVTransport");
                 var requestUri = GetControlUri(mediaRenderer, avTransportService);
