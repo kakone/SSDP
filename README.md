@@ -1,4 +1,4 @@
-# SSDP.Portable
+# SSDP
 .NET Standard implementation of Simple Service Discovery Protocol (with AV transport service control point sample).<br />
 
 ## Usage
