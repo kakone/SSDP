@@ -25,9 +25,8 @@ namespace UPnP.Tests
             {
                 Assert.Inconclusive("No media renderer found");
             }
-            await controlPoint.PlayAsync(
-                mediaRenderers.FirstOrDefault(render => render.FriendlyName.StartsWith("Kodi")) ?? mediaRenderers.First(),
-                BIG_BUCK_BUNNY_MOVIE);
+            var renderer = mediaRenderers.FirstOrDefault(render => render.FriendlyName.StartsWith("Kodi")) ?? mediaRenderers.First();
+            await controlPoint.PlayAsync(renderer, BIG_BUCK_BUNNY_MOVIE);
         }
     }
 }

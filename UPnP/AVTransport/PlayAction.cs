@@ -6,14 +6,8 @@ namespace UPnP.AVTransport
     /// Play action
     /// </summary>
     [XmlRoot("Play")]
-    public class PlayAction
+    public class PlayAction : Action
     {
-        /// <summary>
-        /// Gets or sets the instance ID
-        /// </summary>
-        [XmlElement(Namespace = "")]
-        public uint InstanceID { get; set; }
-
         /// <summary>
         /// Gets or sets the play speed (example values : "1", "1/2", "-1", "1/10", etc.)
         /// </summary>

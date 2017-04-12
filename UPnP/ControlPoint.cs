@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace UPnP
 {
@@ -32,6 +33,17 @@ namespace UPnP
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.ExpectContinue = false;
             return httpClient;
+        }
+
+        /// <summary>
+        /// Gets a service
+        /// </summary>
+        /// <param name="device">UPnP device</param>
+        /// <param name="serviceName">service name</param>
+        /// <returns>the corresponding service</returns>
+        protected Service GetService(Device device, string serviceName)
+        {
+            return device.Services.First(service => service.ServiceName == "AVTransport");
         }
 
         /// <summary>
@@ -76,6 +88,38 @@ namespace UPnP
             }
 
             return await httpClient.PostAsync(controlURL, request);
+        }
+
+        /// <summary>
+        /// Action call
+        /// </summary>
+        /// <param name="httpClient">HTTPClient</param>
+        /// <param name="device">UPnP device</param>
+        /// <param name="serviceName">service name</param>
+        /// <param name="action">action</param>
+        /// <param name="headers">optional HTTP headers</param>
+        /// <returns>HTTP response message</returns>
+        protected async Task<HttpResponseMessage> PostActionAsync(HttpClient httpClient, Device device, string serviceName, object action,
+            params Tuple<string, string>[] headers)
+        {
+            var service = GetService(device, serviceName);
+            return await PostActionAsync(httpClient, service, GetControlUri(device, service), action, headers);
+        }
+
+        /// <summary>
+        /// Action call
+        /// </summary>
+        /// <param name="device">UPnP device</param>
+        /// <param name="serviceName">service name</param>
+        /// <param name="action">action</param>
+        /// <param name="headers">optional HTTP headers</param>
+        /// <returns>HTTP response message</returns>
+        public async Task<HttpResponseMessage> PostActionAsync(Device device, string serviceName, object action, params Tuple<string, string>[] headers)
+        {
+            using (var httpClient = CreateHttpClient())
+            {
+                return await PostActionAsync(httpClient, device, serviceName, action, headers);
+            }
         }
     }
 }

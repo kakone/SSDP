@@ -15,6 +15,8 @@ namespace UPnP.AVTransport
     /// </summary>
     public class AVTransportControlPoint : ControlPoint
     {
+        private const string SERVICE_NAME = "AVTransport";
+
         /// <summary>
         /// Initializes a new instance of AVTransportControlPoint
         /// </summary>
@@ -29,8 +31,8 @@ namespace UPnP.AVTransport
             }
         }
 
-        private ISsdp Ssdp { get; set; }
-        private IEnumerable<MimeType> MimeTypes { get; set; }
+        private ISsdp Ssdp { get; }
+        private IEnumerable<MimeType> MimeTypes { get; }
 
         /// <summary>
         /// Refresh the collection of media renderers
@@ -117,7 +119,7 @@ namespace UPnP.AVTransport
             {
                 await SetMimeTypeAsync(httpClient, mediaInfo);
 
-                var avTransportService = mediaRenderer.Services.First(service => service.ServiceName == "AVTransport");
+                var avTransportService = GetService(mediaRenderer, SERVICE_NAME);
                 var requestUri = GetControlUri(mediaRenderer, avTransportService);
 
                 var setAVTransportURIAction = new SetAVTransportURIAction()
@@ -135,7 +137,7 @@ namespace UPnP.AVTransport
                     }
                 };
 
-                var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction,
+                var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction, 
                     Tuple.Create("transferMode.dlna.org", "Streaming"));
                 if (response.IsSuccessStatusCode)
                 {
@@ -157,6 +159,41 @@ namespace UPnP.AVTransport
         public async Task PlayAsync(Device mediaRenderer, string uri)
         {
             await PlayAsync(mediaRenderer, new MediaInfo() { Uri = uri });
+        }
+
+        private async Task<HttpResponseMessage> PostActionAsync(Device device, object action)
+        {
+            return await PostActionAsync(device, SERVICE_NAME, action);
+        }
+
+        /// <summary>
+        /// Play
+        /// </summary>
+        /// <param name="mediaRenderer">media renderer</param>
+        /// <returns>Task</returns>
+        public async Task PlayAsync(Device mediaRenderer)
+        {
+            await PostActionAsync(mediaRenderer, new PlayAction());
+        }
+
+        /// <summary>
+        /// Pause
+        /// </summary>
+        /// <param name="mediaRenderer">media renderer</param>
+        /// <returns>Task</returns>
+        public async Task PauseAsync(Device mediaRenderer)
+        {
+            await PostActionAsync(mediaRenderer, new PauseAction());
+        }
+
+        /// <summary>
+        /// Stop
+        /// </summary>
+        /// <param name="mediaRenderer">media renderer</param>
+        /// <returns>Task</returns>
+        public async Task StopAsync(Device mediaRenderer)
+        {
+            await PostActionAsync(mediaRenderer, new StopAction());
         }
     }
 }
