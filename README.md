@@ -21,7 +21,7 @@ await controlPoint.PlayAsync(mediaRenderers.First(), "http://download.blender.or
 NetworkInterface.GetAllNetworkInterfaces() method is [not implemented in UWP](https://github.com/dotnet/corefx/issues/9675).
 
 So, in order to make this work in UWP, you can add [this class](https://github.com/kakone/SSDP/blob/master/UPnP/NetworkInfo_UWP.cs) in your code (I will update the nuget package later for UWP projects). And you will pass a NetworkInfo object to the constructor of the Ssdp class :
-```
+```C#
 new AVTransportControlPoint(new Ssdp(new NetworkInfo()))
 ```
 
