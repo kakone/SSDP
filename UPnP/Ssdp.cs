@@ -24,6 +24,17 @@ namespace UPnP
         private const int UPNP_MULTICAST_PORT = 1900;
         private const int RECEIVE_TIMEOUT = 3000;
 
+        /// <summary>
+        /// Initializes a new instance of Ssdp class
+        /// </summary>
+        /// <param name="networkInformation">network information retriever</param>
+        public Ssdp(INetworkInformation networkInformation = null)
+        {
+            NetworkInformation = networkInformation ?? new NetworkInfo();
+        }
+
+        private INetworkInformation NetworkInformation { get; }
+
         private IDictionary<AddressType, string> MulticastAddresses { get; } =
             new Dictionary<AddressType, string>
             {
@@ -32,26 +43,16 @@ namespace UPnP
                 [AddressType.IPv6SiteLocal] = "FF05::C",
             };
 
-        /// <summary>
-        /// Gets a collection of local IP addresses
-        /// </summary>
-        /// <returns>a collection of local IP addresses</returns>
-        protected IEnumerable<IPAddress> GetLocalAddresses()
-        {
-            return NetworkInterface.GetAllNetworkInterfaces().Select(ni => ni.GetIPProperties()).Where(p => p.GatewayAddresses != null && p.GatewayAddresses.Any()).SelectMany(p => p.UnicastAddresses).Select(
-            aInfo => aInfo.Address).Where(a => a.AddressFamily == AddressFamily.InterNetwork || a.AddressFamily == AddressFamily.InterNetworkV6);
-        }
-
         private async Task<IEnumerable<string>> GetDevicesAsync(string deviceType)
         {
             var tasks = new List<Task<IEnumerable<string>>>();
-            foreach (var localAddress in GetLocalAddresses())
+            foreach (var localAddress in NetworkInformation.GetLocalAddresses())
             {
                 tasks.Add(SearchDevicesAsync(localAddress, deviceType));
             }
             var results = await Task.WhenAll(tasks);
             return results.SelectMany(result => result);
-        }
+        }      
 
         private async Task ReceiveAsync(Socket socket, ArraySegment<byte> buffer, ICollection<string> responses)
         {

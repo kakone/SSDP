@@ -21,9 +21,9 @@ namespace UPnP.AVTransport
         /// Initializes a new instance of AVTransportControlPoint
         /// </summary>
         /// <param name="ssdp">discovery service</param>
-        public AVTransportControlPoint(ISsdp ssdp)
+        public AVTransportControlPoint(ISsdp ssdp = null)
         {
-            Ssdp = ssdp;
+            Ssdp = ssdp ?? new Ssdp();
             var xmlSerializer = new XmlSerializer(typeof(MimeTypes));
             using (var stream = GetType().GetTypeInfo().Assembly.GetManifestResourceStream("UPnP.MimeTypes.xml"))
             {
