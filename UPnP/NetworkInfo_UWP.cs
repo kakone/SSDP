@@ -10,7 +10,7 @@ namespace UPnP
     /// <summary>
     /// Retrieve network information
     /// </summary>
-    public class NetworkInfo : INetworkInformation
+    class NetworkInfo : INetworkInformation
     {
         /// <summary>
         /// Gets a collection of local IP addresses
