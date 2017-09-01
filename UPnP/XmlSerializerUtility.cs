@@ -1,4 +1,7 @@
-﻿using System.Xml;
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace UPnP
@@ -36,15 +39,6 @@ namespace UPnP
             using (var textWriter = new StringWriterUTF8())
             {
                 var type = obj.GetType();
-                var xmlAttributeOverrides = new XmlAttributeOverrides();
-                if (rootAttribute != null)
-                {
-                    var xmlAttributes = new XmlAttributes()
-                    {
-                        XmlRoot = rootAttribute
-                    };
-                    xmlAttributeOverrides.Add(type, xmlAttributes);
-                }
                 using (var xmWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { OmitXmlDeclaration = true }))
                 {
                     var namespaces = new XmlSerializerNamespaces();
@@ -55,9 +49,22 @@ namespace UPnP
                             namespaces.Add(ns.Name, ns.Namespace);
                         }
                     }
-                    new XmlSerializer(type, xmlAttributeOverrides).Serialize(xmWriter, obj, namespaces);
+                    new XmlSerializer(type).Serialize(xmWriter, obj, namespaces);
                 }
-                return textWriter.ToString();
+                var result = textWriter.ToString();
+                if (!String.IsNullOrEmpty(rootAttribute?.Namespace))
+                {
+                    var prefix = namespacePrefixes.FirstOrDefault(n => n.Namespace == rootAttribute.Namespace)?.Name;
+                    if (prefix != null)
+                    {
+                        prefix += ":";
+                        var sb = new StringBuilder(result);
+                        sb.Insert(1, prefix);
+                        sb.Insert(sb.Length - rootAttribute.ElementName.Length - 1, prefix);
+                        result = sb.ToString();
+                    }
+                }
+                return result;
             }
         }
 
