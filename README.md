@@ -8,7 +8,7 @@ var devices = await new Ssdp().SearchUPnPDevicesAsync("MediaRenderer");
 ```
 ### UPnP AV transport service control point
 ```C#
-var controlPoint = new AVTransportControlPoint(new Ssdp());
+var controlPoint = new AVTransportControlPoint();
 
 // Gets the list of the media renderers
 var mediaRenderers = await controlPoint.GetMediaRenderersAsync();
