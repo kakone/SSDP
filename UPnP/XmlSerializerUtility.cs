@@ -51,20 +51,20 @@ namespace UPnP
                     }
                     new XmlSerializer(type).Serialize(xmWriter, obj, namespaces);
                 }
-                var result = textWriter.ToString();
-                if (!String.IsNullOrEmpty(rootAttribute?.Namespace))
+
+                if (!String.IsNullOrEmpty(rootAttribute?.Namespace))    // Bug workaround in UWP release mode instead of new XmlSerializer(type, rootAttribute)
                 {
                     var prefix = namespacePrefixes.FirstOrDefault(n => n.Namespace == rootAttribute.Namespace)?.Name;
                     if (prefix != null)
                     {
                         prefix += ":";
-                        var sb = new StringBuilder(result);
+                        var sb = new StringBuilder(textWriter.ToString());
                         sb.Insert(1, prefix);
                         sb.Insert(sb.Length - rootAttribute.ElementName.Length - 1, prefix);
-                        result = sb.ToString();
+                        return sb.ToString();
                     }
                 }
-                return result;
+                return textWriter.ToString();
             }
         }
 

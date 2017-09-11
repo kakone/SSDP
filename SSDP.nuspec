@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>SSDP.Portable</id>
+    <version>1.0.28</version>
+    <authors>Stéphane Mitermite</authors>
+    <owners>Stéphane Mitermite</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/kakone/SSDP/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/kakone/SSDP</projectUrl>
+    <description>.NET Standard implementation of Simple Service Discovery Protocol (with AV transport service control point sample)</description>
+    <copyright>Copyright © 2017 Stéphane Mitermite</copyright>
+    <tags>ssdp upnp simple service discovery protocol device controlpoint standard</tags>
+    <dependencies>
+      <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      <dependency id="System.Net.NetworkInformation" version="4.3.0" exclude="Build,Analyzers" />
+      <dependency id="System.Xml.XmlSerializer" version="4.3.0" exclude="Build,Analyzers" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\netstandard1.4\UPnP.dll" />
+
+    <!-- UWP reference assemblies -->
+    <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\UAP10\UPnP.dll" />
+    <file src="UPnP.UWP\bin\Release\UPnP.UWP.dll" target="lib\UAP10\UPnP.UWP.dll" />
+  </files>
+</package>

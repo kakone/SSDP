@@ -1,8 +1,6 @@
-﻿/*
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using UPnP;
 using Windows.Networking;
 
 namespace UPnP
@@ -10,7 +8,7 @@ namespace UPnP
     /// <summary>
     /// Retrieve network information
     /// </summary>
-    class NetworkInfo : INetworkInformation
+    public class NetworkInfo : INetworkInformation
     {
         /// <summary>
         /// Gets a collection of local IP addresses
@@ -26,4 +24,3 @@ namespace UPnP
         }
     }
 }
-*/
