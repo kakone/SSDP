@@ -13,7 +13,7 @@ namespace UPnP.AVTransport
     /// <summary>
     /// AVTransport control point
     /// </summary>
-    public class AVTransportControlPoint : ControlPoint
+    public class AVTransportControlPoint : ControlPoint, IAVTransportControlPoint
     {
         private const string SERVICE_NAME = "AVTransport";
 
@@ -137,7 +137,7 @@ namespace UPnP.AVTransport
                     }
                 };
 
-                var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction, 
+                var response = await PostActionAsync(httpClient, avTransportService, requestUri, setAVTransportURIAction,
                     Tuple.Create("transferMode.dlna.org", "Streaming"));
                 if (response.IsSuccessStatusCode)
                 {

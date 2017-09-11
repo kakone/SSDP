@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.4</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>SSDP.Portable</PackageId>
-    <Version>1.0.28</Version>
+    <Version>1.0.29</Version>
     <Authors>Stéphane Mitermite</Authors>
     <Company>Stéphane Mitermite</Company>
     <Product>SSDP.Portable</Product>
@@ -13,7 +13,7 @@
     <PackageLicenseUrl>https://github.com/kakone/SSDP/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/kakone/SSDP</PackageProjectUrl>
     <PackageTags>ssdp upnp simple service discovery protocol device controlpoint standard</PackageTags>
-    <AssemblyVersion>1.0.28.0</AssemblyVersion>
+    <AssemblyVersion>1.0.29.0</AssemblyVersion>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
