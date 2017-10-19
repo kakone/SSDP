@@ -17,7 +17,7 @@ var mediaRenderers = await controlPoint.GetMediaRenderersAsync();
 await controlPoint.PlayAsync(mediaRenderers.First(), "http://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_480p_surround-fix.avi");
 ```
 
-## Note for UWP projects
+## Note for UWP projects <= build 15063
 NetworkInterface.GetAllNetworkInterfaces() method is [not implemented in UWP before Fall Creators Update](https://github.com/dotnet/corefx/issues/9675).
 
 So, in order to make this work in UWP (<= build 15063), you must use the specific [NetworkInfo class for UWP](https://github.com/kakone/SSDP/blob/master/UPnP.UWP/NetworkInfo.cs) in your code. You will pass this NetworkInfo object to the constructor of the Ssdp class :
