@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>SSDP.Portable</id>
-    <version>1.0.29</version>
+    <version>1.0.30</version>
     <authors>Stéphane Mitermite</authors>
     <owners>Stéphane Mitermite</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -21,7 +21,9 @@
     <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\netstandard1.4\UPnP.dll" />
 
     <!-- UWP reference assemblies -->
-    <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\UAP10\UPnP.dll" />
-    <file src="UPnP.UWP\bin\Release\UPnP.UWP.dll" target="lib\UAP10\UPnP.UWP.dll" />
+    <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\UAP10.0.10240\UPnP.dll" />
+    <file src="UPnP.UWP\bin\Release\UPnP.UWP.dll" target="lib\UAP10.0.10240\UPnP.UWP.dll" />
+    
+    <file src="UPnP\bin\Release\netstandard1.4\UPnP.dll" target="lib\UAP10.0.16299\UPnP.dll" />
   </files>
 </package>
