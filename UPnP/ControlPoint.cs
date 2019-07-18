@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Linq;
 
 namespace UPnP
 {
@@ -43,7 +43,7 @@ namespace UPnP
         /// <returns>the corresponding service</returns>
         protected Service GetService(Device device, string serviceName)
         {
-            return device.Services.First(service => service.ServiceName == "AVTransport");
+            return device.Services.First(service => service.ServiceName == serviceName);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace UPnP
         {
             var xmlRootAttribute = action.GetType().GetTypeInfo().GetCustomAttribute<XmlRootAttribute>();
             xmlRootAttribute.Namespace = service.ServiceType;
-            var request = new StringContent(String.Format(SOAP_ENVELOPE, XmlSerializerUtility.Serialize(action, xmlRootAttribute,
+            var request = new StringContent(string.Format(SOAP_ENVELOPE, XmlSerializerUtility.Serialize(action, xmlRootAttribute,
                 new XmlQualifiedName("u", service.ServiceType))), Encoding.UTF8, "text/xml");
             request.Headers.Add("SOAPAction", $"\"{service.ServiceType}#{xmlRootAttribute.ElementName}\"");
             if (headers != null)

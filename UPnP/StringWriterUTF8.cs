@@ -11,9 +11,6 @@ namespace UPnP
         /// <summary>
         /// Gets the Encoding in which the output is written
         /// </summary>
-        public override Encoding Encoding
-        {
-            get { return Encoding.UTF8; }
-        }
+        public override Encoding Encoding => Encoding.UTF8;
     }
 }

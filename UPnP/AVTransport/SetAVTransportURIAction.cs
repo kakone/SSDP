@@ -34,14 +34,11 @@ namespace UPnP.AVTransport
         [XmlElement("CurrentURIMetaData", Namespace = "")]
         public string CurrentUriMetadata
         {
-            get
-            {
-                return XmlSerializerUtility.Serialize(UriMetadata,
+            get => XmlSerializerUtility.Serialize(UriMetadata,
                     new XmlQualifiedName("upnp", "urn:schemas-upnp-org:metadata-1-0/upnp/"),
                     new XmlQualifiedName("dc", "http://purl.org/dc/elements/1.1/"),
                     new XmlQualifiedName("sec", "http://www.sec.co.kr/"));
-            }
-            set { throw new NotImplementedException(); }
+            set => throw new NotImplementedException();
         }
     }
 }

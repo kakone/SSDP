@@ -4,17 +4,16 @@
     <TargetFramework>netstandard1.4</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>SSDP.Portable</PackageId>
-    <Version>1.0.29</Version>
+    <Version>1.0.31</Version>
     <Authors>Stéphane Mitermite</Authors>
     <Company>Stéphane Mitermite</Company>
     <Product>SSDP.Portable</Product>
     <Description>.NET Standard implementation of Simple Service Discovery Protocol (with AV transport service control point sample)</Description>
-    <Copyright>Copyright 2017 Stéphane Mitermite</Copyright>
-    <PackageLicenseUrl>https://github.com/kakone/SSDP/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2019 Stéphane Mitermite</Copyright>
     <PackageProjectUrl>https://github.com/kakone/SSDP</PackageProjectUrl>
     <PackageTags>ssdp upnp simple service discovery protocol device controlpoint standard</PackageTags>
-    <AssemblyVersion>1.0.29.0</AssemblyVersion>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

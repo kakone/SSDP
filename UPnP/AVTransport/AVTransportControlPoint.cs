@@ -45,26 +45,27 @@ namespace UPnP.AVTransport
 
         private async Task SetMimeTypeAsync(HttpClient httpClient, MediaInfo mediaInfo)
         {
-            if (!String.IsNullOrWhiteSpace(mediaInfo.Title) && !String.IsNullOrWhiteSpace(mediaInfo.Type))
+            if (!string.IsNullOrWhiteSpace(mediaInfo.Title) && !string.IsNullOrWhiteSpace(mediaInfo.Type))
             {
                 return;
             }
 
             var mediaUri = new Uri(WebUtility.UrlDecode(mediaInfo.Uri).Trim());
-            String mediaFilename;
-            try { mediaFilename = Path.GetFileName(mediaUri.AbsolutePath); }
+            string mediaFilename;
+            try
+            { mediaFilename = Path.GetFileName(mediaUri.AbsolutePath); }
             catch (Exception) { mediaFilename = null; }
-            if (String.IsNullOrWhiteSpace(mediaInfo.Title))
+            if (string.IsNullOrWhiteSpace(mediaInfo.Title))
             {
                 mediaInfo.Title = mediaFilename;
             }
 
-            if (String.IsNullOrWhiteSpace(mediaInfo.Type))
+            if (string.IsNullOrWhiteSpace(mediaInfo.Type))
             {
-                if (!String.IsNullOrWhiteSpace(mediaFilename))
+                if (!string.IsNullOrWhiteSpace(mediaFilename))
                 {
                     var extension = Path.GetExtension(mediaFilename);
-                    if (!String.IsNullOrWhiteSpace(extension))
+                    if (!string.IsNullOrWhiteSpace(extension))
                     {
                         extension = extension.Substring(1).ToLower();
                         var mimeType = MimeTypes.FirstOrDefault(mt => mt.Extensions.Any(ext => extension == ext));
@@ -99,8 +100,10 @@ namespace UPnP.AVTransport
             {
                 switch (splittedString[0])
                 {
-                    case "video": return "videoItem";
-                    case "image": return "imageItem";
+                    case "video":
+                        return "videoItem";
+                    case "image":
+                        return "imageItem";
                 }
             }
 

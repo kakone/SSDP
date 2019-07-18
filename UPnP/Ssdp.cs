@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -52,7 +51,7 @@ namespace UPnP
             }
             var results = await Task.WhenAll(tasks);
             return results.SelectMany(result => result);
-        }      
+        }
 
         private async Task ReceiveAsync(Socket socket, ArraySegment<byte> buffer, ICollection<string> responses)
         {
@@ -93,7 +92,7 @@ namespace UPnP
                             "MAN: \"ssdp:discover\"\r\n" +
                             "MX: 3\r\n\r\n";
                         var data = new ArraySegment<byte>(Encoding.UTF8.GetBytes(req));
-                        for (int i = 0; i < 3; i++)
+                        for (var i = 0; i < 3; i++)
                         {
                             await socket.SendToAsync(data, SocketFlags.None, multicastEndPoint);
                         }
@@ -180,8 +179,11 @@ namespace UPnP
                                 if (xmlReader.Name == "device")
                                 {
                                     var device = (Device)xmlSerializer.Deserialize(xmlReader.ReadSubtree());
-                                    device.URLBase = urlBase ?? deviceNotification.Location;
-                                    devices.Add(device);
+                                    if (device.DeviceType == deviceType)
+                                    {
+                                        device.URLBase = urlBase ?? deviceNotification.Location;
+                                        devices.Add(device);
+                                    }
                                 }
                             }
                         }

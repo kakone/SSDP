@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -52,7 +51,7 @@ namespace UPnP
                     new XmlSerializer(type).Serialize(xmWriter, obj, namespaces);
                 }
 
-                if (!String.IsNullOrEmpty(rootAttribute?.Namespace))    // Bug workaround in UWP release mode instead of new XmlSerializer(type, rootAttribute)
+                if (!string.IsNullOrEmpty(rootAttribute?.Namespace))    // Bug workaround in UWP release mode instead of new XmlSerializer(type, rootAttribute)
                 {
                     var prefix = namespacePrefixes.FirstOrDefault(n => n.Namespace == rootAttribute.Namespace)?.Name;
                     if (prefix != null)

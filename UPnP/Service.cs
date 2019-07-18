@@ -29,7 +29,7 @@ namespace UPnP
         [XmlElement("serviceType")]
         public string ServiceType
         {
-            get { return _serviceType; }
+            get => _serviceType;
             set
             {
                 if (_serviceType != value)
@@ -46,7 +46,7 @@ namespace UPnP
                         var groups = regex.Match(value).Groups;
                         ServiceName = groups["serviceName"]?.Value;
                         var serviceVersion = groups["serviceVersion"]?.Value;
-                        ServiceVersion = (String.IsNullOrWhiteSpace(serviceVersion) ? 0 : Convert.ToInt32(serviceVersion));
+                        ServiceVersion = (string.IsNullOrWhiteSpace(serviceVersion) ? 0 : Convert.ToInt32(serviceVersion));
                     }
                 }
             }
